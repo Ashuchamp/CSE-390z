@@ -1,0 +1,172 @@
+%%%%%%%%%%%%%%%%%%%%% PACKAGE IMPORTS %%%%%%%%%%%%%%%%%%%%%
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{fullpage}       
+\usepackage{changepage}
+
+\usepackage[x11names, rgb]{xcolor}
+\usepackage{graphicx}
+\usepackage[nooldvoltagedirection]{circuitikz}
+\usetikzlibrary{decorations,arrows,shapes}
+
+\usepackage{datetime}
+\usepackage{etoolbox}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{varwidth}
+\usepackage{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%% DATE DISPLAY %%%%%%%%%%%%%%%%%%%%%%%
+%% This is math to change Overleaf's default timezone     %%
+%% from GMT to PST. It doesn't account for daylight       %%
+%% savings, so it may seem a day ahead or late at times,  %%
+%% but no worries. It'll fix itself in an hour :D         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifnum\currenthour<6 
+  \advance\currenthour+18
+  \ifnum\day=1
+    \testifleapyear\year
+    \ifnum\month=1 \month13\advance\year-1\fi
+    \advance\month-1
+    \day\ifcase\month\or31\or\ifDTleapyear
+        29\else 28\fi\or31\or30\or31\or30\or31\or
+        31\or30\or31\or30\or31\fi
+  \else\advance\day-1\fi
+\else\advance\currenthour-6\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%% QUESTION # %%%%%%%%%%%%%%%%%%%%%%%%
+%% You can ignore this for the most part. Basically it    %%
+%% helps number your questions and creates a new page     %%
+%% with each question for the aesthetics. It also creates %%
+%% parts i.e. (a) (b) (c) for multiple part questions.    %%
+%% To use do: \begin{question} ... \end{question}         %%
+%% and: \begin{part} ... \end{part}                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+
+\providetoggle{questionnumbers}
+\settoggle{questionnumbers}{true}
+\newcommand{\noquestionnumbers}{
+    \settoggle{questionnumbers}{false}
+}
+
+\newcounter{questionCounter}
+\newenvironment{question}[2][\arabic{questionCounter}]{%
+    \ifnum\value{questionCounter}=0 \else {\newpage}\fi%
+    \setcounter{partCounter}{0}%
+    \vspace{.25in} \hrule \vspace{0.5em}%
+    \noindent{\bf \iftoggle{questionnumbers}{Question #1: }{}#2}%
+    \addtocounter{questionCounter}{1}%
+    \vspace{0.8em} \hrule \vspace{.10in}%
+}
+
+\newcounter{partCounter}[questionCounter]
+\renewenvironment{part}[1][\alph{partCounter}]{%
+    \addtocounter{partCounter}{1}%
+    \vspace{.10in}%
+    \begin{indented}%
+       {\bf (#1)} %
+}{\end{indented}}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+\def\show#1{\ifdefempty{#1}{}{#1\\}}
+
+%%%%%%%%%%%%%%%%%%%%%%%% SHORT CUTS %%%%%%%%%%%%%%%%%%%%%%%%
+%% This is just to improve your quality of life. Instead  %%
+%% of having to type long things, you can type short      %%
+%% things. Ex: \IMP instead of \rightarrow to get ->      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\IMP{\rightarrow}
+\def\AND{\wedge}
+\def\OR{\vee}
+\def\BI{\leftrightarrow}
+\def\DIFF{\setminus}
+\def\SUB{\subseteq}
+
+\newcolumntype{C}{>{\centering\arraybackslash}m{1.5cm}}
+\renewcommand\qedsymbol{$\blacksquare$}
+
+%%%%%%%%%%%%%%%%%%%%%%%% ANSWER BOX %%%%%%%%%%%%%%%%%%%%%%%%
+%% This will improve the quality of life for your TA.     %%
+%% Use \begin{answer} and \end{answer} to surround your   %%
+%% answers so it will be easier to see. You can adjust    %%
+%% the background and frame colors below as needed.       %%
+%% Here is the manual to help: tinyurl.com/tcolorbox-man  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtcolorbox{answer}
+{
+  colback   = green!5!white,    % Background color
+  colframe  = green!75!black,   % Outline color
+  box align = center,           % Align box on text line
+  varwidth upper,               % Enables multi line input
+  hbox                          % Bounds box to text width
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE %%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This is shows the homework number, your name, your     %%
+%% collaborators, and the day. If you'd prefer to not so  %%
+%% your name, just comment out the "\maketitle" below.    %%
+%% If you want to change the date, look in \date{...} and %%
+%% change out "\advance\day-1\today" for what you want    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\vspace{-2cm}Quick Check: Equivalence Proof\vspace{-0.3cm}}
+\author{**YOUR NAME HERE** \thanks{
+Collaborators: List collaborators here or delete if none}}
+\date{\vspace{-0.3cm}\today\vspace{-1cm}}
+
+%%%%%%%%%%%%%%%%%%%%%%%% WORK BELOW %%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%% QUESTION 0 %%%%%%%%%%%%%%%%%%%%%%%%
+\begin{question}{Propositional Equivalence Proof}
+Use a chain of equivalences to show that the following proposition is a tautology (i.e. always true).\\
+$$((p \land q) \lor (p \rightarrow (\lnot p \land r))) \lor p$$
+
+\begin{answer}
+%% TODO: your solution here
+\begin{align}
+    ((p \land q) \lor (\lnot p \lor (\lnot p \land r))) \lor P \\
+    ((p \land q) \lor ((\lnot p \land r) \lor \lnot p)) \lor P \\
+    (p \land q) \lor (((\lnot p \land r) \lor \lnot p) \lor p) \\
+    (p \land q) \lor ((\lnot p \land r) \lor (\lnot p \lor p)) \\
+    (p \land q) \lor ((\lnot p \land r) \lor T) \\
+    (p \land q) \lor T \\
+    T
+\end{align}
+
+
+
+\end{answer}
+\end{question}
+
+%%%%%%%%%%%%%%%%%%%%%%%% QUESTION 1 %%%%%%%%%%%%%%%%%%%%%%%%
+\begin{question}{Video Solution}
+\begin{part}
+What is one thing you took away from the video solution?
+\begin{answer}
+%% TODO: Your answer here
+The video solution showed that I need to show all the steps of the solution (as well as the rule that was used) rather than just skipping steps because something seems obvious to me when i am soliving the problem
+
+
+\end{answer}
+\end{part}
+
+\begin{part}
+What topic from the quick check, lecture, or 311 homework would you most like to review in workshop?
+
+\begin{answer}
+%% TODO: Your answer here
+I would like some more practice with the rules that were introduced in class this week since they can be applied in many different ways to finish problems.
+
+\end{answer}
+\end{part}
+\end{question}
+
+\end{document}
